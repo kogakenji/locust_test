@@ -1,25 +1,30 @@
-from locust import HttpLocust, TaskSet
+from locust import HttpLocust, TaskSet, task
 
-def login(l):
-    l.client.post("/login", {"username":"ellen_key", "password":"education"})
-
-def logout(l):
-    l.client.post("/logout", {"username":"ellen_key", "password":"education"})
-
-def index(l):
-    l.client.get("/")
-
-def profile(l):
-    l.client.get("/profile")
 
 class UserBehavior(TaskSet):
-    tasks = {index: 2, profile: 1}
 
     def on_start(self):
-        login(self)
+        """ on_start is called when a Locust start before any task is scheduled"""
+        self.login()
 
     def on_stop(self):
-        logout(self)
+        """ on_stop is called when the TaskSet is stopping """
+        self.logout()
+
+    def login(self):
+        self.client.post("/login", {"username": "kenji", "password": "password"})
+
+    def logout(self):
+        self.client.post("/logout")
+
+    @task(1)
+    def index(self):
+        self.client.get("/")
+
+    # @task(1)
+    # def profile(self):
+    #     self.client.get("/profile")
+
 
 class WebsiteUser(HttpLocust):
     task_set = UserBehavior
