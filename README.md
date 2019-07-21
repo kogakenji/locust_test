@@ -1,2 +1,2 @@
-# locust_test
+# Locust Test
 Test with locust test framework
